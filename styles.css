@@ -84,7 +84,7 @@ header {
 }
 
 .field {
-    height: 30px;
+    height: 3vh;
     aspect-ratio: 1/1;
 
     background-color: rgb(220, 220, 220);
