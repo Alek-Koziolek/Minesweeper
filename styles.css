@@ -92,6 +92,24 @@ header {
 }
 
 .field:hover {
-    background-color: rgb(250, 250, 250);
+    /* background-color: rgb(250, 250, 250); */
     cursor: pointer;
+}
+
+.flag {
+    background-color: red;
+}
+
+.uncertain {
+    background-color: gold;
+}
+
+.bomb {
+    background-color: black;
+    border: 1px solid white;
+    border-radius: 50%;
+}
+
+.clicked {
+    background-color: rgb(90, 90, 90);
 }
