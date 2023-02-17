@@ -7,6 +7,28 @@ minefield.addEventListener("contextmenu", event => event.preventDefault());
 //default size
 let columns = 8;
 let rows = 8;
+let mines = 10;
+let firstMove = false;
+
+function placeMine() {
+    let x = Math.floor(Math.random() * columns);
+    let y = Math.floor(Math.random() * rows);
+    let id = "#f" + x.toString() + "-" + y.toString();
+    let fld = document.querySelector(id);
+
+    if (!fld.classList.contains("clicked") && !fld.classList.contains("bomb")) {
+        fld.className = '';
+        fld.classList.add("tile", "bomb");
+    }
+    else placeMine();
+}
+
+function generateMines() {
+    for (let m = 0; m < mines; m++) {
+        placeMine();
+    }
+    firstMove = false;
+}
 
 function initializeField(option) {
 
@@ -14,18 +36,21 @@ function initializeField(option) {
         case '1':
             columns = 8;
             rows = 8;
+            mines = 10;
             minefield.className = '';
             minefield.classList.add("beginner");
             break;
         case '2':
             columns = 16;
             rows = 16;
+            mines = 40;
             minefield.className = '';
             minefield.classList.add("intermediate");
             break;
         case '3':
             columns = 30;
             rows = 16;
+            mines = 90;
             minefield.className = '';
             minefield.classList.add("expert");
             break;
@@ -41,10 +66,11 @@ function initializeField(option) {
         for (let c = 0; c < columns; c++) {
             const field = document.createElement("div");
             field.classList.add("field");
-            field.id = c.toString() + '-' + r.toString();
+            field.id = 'f' + c.toString() + '-' + r.toString();
             minefield.appendChild(field);
         }
     }
+    firstMove = true;
 
     let fields = document.querySelectorAll(".field");
 
@@ -65,9 +91,10 @@ function initializeField(option) {
                 }
 
             }
-            else if(event.button === 0) {
-                fld.className ='';
+            else if (event.button === 0) {
+                fld.className = '';
                 fld.classList.add("field", "clicked");
+                if (firstMove) generateMines();
             }
         })
     });
