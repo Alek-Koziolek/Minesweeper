@@ -8,7 +8,9 @@ minefield.addEventListener("contextmenu", event => event.preventDefault());
 let columns = 8;
 let rows = 8;
 let mines = 10;
+
 let firstMove = false;
+let fieldsArray = [];
 
 function placeMine() {
     let x = Math.floor(Math.random() * columns);
@@ -63,12 +65,15 @@ function initializeField(option) {
     }
 
     for (let r = 0; r < rows; r++) {
+        let row = [];
         for (let c = 0; c < columns; c++) {
             const field = document.createElement("div");
             field.classList.add("field");
-            field.id = 'f' + c.toString() + '-' + r.toString();
+            field.id = 'f' + r.toString() + '-' + c.toString();
             minefield.appendChild(field);
+            row.push(field);
         }
+        fieldsArray.push(row);
     }
     firstMove = true;
 
