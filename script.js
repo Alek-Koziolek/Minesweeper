@@ -1,6 +1,8 @@
 const minefield = document.querySelector("#minefield");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
+const tryAgainBtn = document.querySelector("#try-again-btn");
+const gameOverBoard = document.querySelector("#game-over-div");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -12,22 +14,22 @@ let mines = 10;
 let firstMove = false;
 let fieldsArray = [];
 
-function placeMine() {
+function placeMine(startingFieldId) {
     let x = Math.floor(Math.random() * rows);
     let y = Math.floor(Math.random() * columns);
     let id = "#f" + y.toString() + "-" + x.toString();
     let fld = document.querySelector(id);
 
-    if (!fld.classList.contains("clicked") && !fld.classList.contains("bomb")) {
+    if (fld.id.toString() !== startingFieldId && !fld.classList.contains("bomb")) {
         fld.className = '';
-        fld.classList.add("bomb");
+        fld.classList.add("bomb", "field");
     }
-    else placeMine();
+    else placeMine(startingFieldId);
 }
 
-function generateMines() {
+function generateMines(startingFieldId) {
     for (let m = 0; m < mines; m++) {
-        placeMine();
+        placeMine(startingFieldId);
     }
     firstMove = false;
 }
@@ -123,8 +125,10 @@ function initializeField(option) {
 
             }
             else if (event.button === 0) {
-                if (firstMove) generateMines();
+                if (firstMove) generateMines(fld.id.toString());
                 countSurroundingMines(fld);
+                if (fld.classList.contains("bomb")) gameOverBoard.style.visibility = "visible"
+
             }
         })
     });
@@ -134,4 +138,15 @@ initializeField('1');
 
 restartBtn.addEventListener("click", () => {
     initializeField(selectDiff.options[selectDiff.selectedIndex].value);
+});
+
+tryAgainBtn.addEventListener("click", () => {
+    initializeField(selectDiff.options[selectDiff.selectedIndex].value);
+    gameOverBoard.style.display = "none";
+});
+
+document.addEventListener('keyup', (event) => {
+    if (event.key === "r") {
+        initializeField(selectDiff.options[selectDiff.selectedIndex].value);
+    }
 });
