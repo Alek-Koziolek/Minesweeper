@@ -13,14 +13,14 @@ let firstMove = false;
 let fieldsArray = [];
 
 function placeMine() {
-    let x = Math.floor(Math.random() * columns);
-    let y = Math.floor(Math.random() * rows);
-    let id = "#f" + x.toString() + "-" + y.toString();
+    let x = Math.floor(Math.random() * rows);
+    let y = Math.floor(Math.random() * columns);
+    let id = "#f" + y.toString() + "-" + x.toString();
     let fld = document.querySelector(id);
 
     if (!fld.classList.contains("clicked") && !fld.classList.contains("bomb")) {
         fld.className = '';
-        fld.classList.add("tile", "bomb");
+        fld.classList.add("bomb");
     }
     else placeMine();
 }
@@ -30,6 +30,31 @@ function generateMines() {
         placeMine();
     }
     firstMove = false;
+}
+
+function countSurroundingMines(fld) {
+    let fldId = fld.id.toString().substr(1,).split("-");
+    let howMany = 0;
+
+    let x = parseInt(fldId[1]);
+    let y = parseInt(fldId[0]);
+
+    for (let i = x - 1; i <= x + 1; i++) {
+        for (let j = y - 1; j <= y + 1; j++) {
+            if (!(i < 0 || j < 0 || i >= rows || j >= columns)) {
+                if (fieldsArray[j][i].classList.contains("bomb") && fieldsArray[j][i].id.toString() !== fld.id.toString()) {
+                    howMany++;
+                }
+            }
+        }
+    }
+    if (!fld.classList.contains("clicked")) {
+        if (howMany !== 0) {
+            fld.innerText = howMany;
+            fld.classList.add("bomb" + howMany.toString(), "clicked");
+        }
+        else fld.classList.add("clicked");
+    }
 }
 
 function initializeField(option) {
@@ -64,6 +89,7 @@ function initializeField(option) {
         minefield.firstChild.remove();
     }
 
+    fieldsArray = [];
     for (let r = 0; r < rows; r++) {
         let row = [];
         for (let c = 0; c < columns; c++) {
@@ -97,9 +123,8 @@ function initializeField(option) {
 
             }
             else if (event.button === 0) {
-                fld.className = '';
-                fld.classList.add("field", "clicked");
                 if (firstMove) generateMines();
+                countSurroundingMines(fld);
             }
         })
     });
