@@ -157,15 +157,17 @@ function initializeField(option) {
 
     fields.forEach(fld => {
         fld.addEventListener("mouseup", (event) => {
-            if (event.button === 2) {
+            if (event.button === 2 && !fld.classList.contains("clicked")) {
                 if (fld.classList.contains("flag")) {
                     fld.className = '';
                     fld.classList.add("field", "uncertain");
                     flags += 1;
+                    fld.innerText = '?';
                 }
                 else if (fld.classList.contains("uncertain")) {
                     fld.className = '';
                     fld.classList.add("field");
+                    fld.innerText = '';
                 }
                 else if(flags > 0){
                     fld.className = '';
@@ -173,7 +175,7 @@ function initializeField(option) {
                     flags -= 1;
                 }
             }
-            else if (event.button === 0) {
+            else if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
                 if (firstMove) generateMines(fld.id.toString());
                 if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
                 else{
