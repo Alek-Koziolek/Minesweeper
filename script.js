@@ -88,7 +88,14 @@ function gameOver(win) {
             document.querySelector("#" + fldId).classList.add("bomb");
         })
     }
-    else tilesLeft.innerText = "Congratulations, You Win!";
+    else{
+        tilesLeft.innerText = "Congratulations, You Win!";
+        minesArray.forEach(fldId => {
+            const temp = document.querySelector("#" + fldId);
+            temp.className = '';
+            temp.classList.add("field", "flag");
+        })
+    } 
 
     minefield.style.pointerEvents = "none";
 }

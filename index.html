@@ -16,16 +16,20 @@
             <h1>Minesweeper</h1>
             <p>by <a href="https://github.com/Alek-Koziolek" target="_blank">Alek Koziołek</a></p>
         </div>
-        <select name="difficulty" id="select-difficulty">
-            <option value="" disabled selected hidden>Select difficluty</option>
-            <option value="1">Beginner</option>
-            <option value="2">Intermediate</option>
-            <option value="3">Expert</option>
-        </select>
-        <button id="restart-btn">Restart</button>
+        <div id="options">
+            <div id="select-div">
+                <label for="select-difficulty">Select difficulty</label>
+                <select name="difficulty" id="select-difficulty">
+                    <option value="1" selected>Beginner</option>
+                    <option value="2">Intermediate</option>
+                    <option value="3">Expert</option>
+                </select>
+            </div>
+            <button id="restart-btn" title="Click or use 'r' button to restart">Restart</button>
+        </div>
     </header>
     <div id="board-wrap">
-    <h1>Tiles Left: <span id="tiles-left">100</span></h1>
+        <h1>Tiles Left: <span id="tiles-left">100</span></h1>
         <div id="board">
             <div id="minefield">
             </div>
