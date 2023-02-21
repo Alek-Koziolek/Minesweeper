@@ -84,6 +84,9 @@ function countSurroundingMines(fld) {
 function gameOver(win) {
     if (!win) {
         tilesLeft.innerText = "Game Over";
+        minesArray.forEach(fldId => {
+            document.querySelector("#" + fldId).classList.add("bomb");
+        })
     }
     else tilesLeft.innerText = "Congratulations, You Win!";
 
