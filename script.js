@@ -1,6 +1,16 @@
+/*
+TODO:
+0. Hide mines and make them not being seen in the inspect mode (preferably by adding array with the id numbers of fields with mines)
+1. Add a timer to measure the game time
+2. Add best times to the local storage and display them on page
+3. Styles need to be worked on
+4. Maybe add a fancy way of revealing mines upon losing the game
+*/
+
 const minefield = document.querySelector("#minefield");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
+const tilesLeft = document.querySelector("#tiles-left");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -50,6 +60,7 @@ function countSurroundingMines(fld) {
         }
     }
     if (!fld.classList.contains("clicked")) {
+        tilesLeft.innerText = tilesLeft.innerText - 1;
         if (howMany !== 0) {
             fld.innerText = howMany;
             fld.classList.add("bomb" + howMany.toString(), "clicked");
@@ -68,7 +79,17 @@ function countSurroundingMines(fld) {
     }
 }
 
+function gameOver(win) {
+    if (!win) {
+        tilesLeft.innerText = "Game Over";
+    }
+    else tilesLeft.innerText = "Congratulations, You Win!";
+
+    minefield.style.pointerEvents = "none";
+}
+
 function initializeField(option) {
+    minefield.style.pointerEvents = "auto";
 
     switch (option) {
         case '1':
@@ -95,6 +116,8 @@ function initializeField(option) {
         default:
             return;
     }
+
+    tilesLeft.innerText = (columns * rows - mines).toString();
 
     while (minefield.firstChild) {
         minefield.firstChild.remove();
@@ -135,7 +158,9 @@ function initializeField(option) {
             }
             else if (event.button === 0) {
                 if (firstMove) generateMines(fld.id.toString());
-                countSurroundingMines(fld);
+                if (!fld.classList.contains("bomb")) countSurroundingMines(fld);
+                else gameOver(false);
+                if (tilesLeft.innerText === "0") gameOver(true);
             }
         })
     });
