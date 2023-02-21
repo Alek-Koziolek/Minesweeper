@@ -1,6 +1,5 @@
 /*
 TODO:
-0. Hide mines and make them not being seen in the inspect mode (preferably by adding array with the id numbers of fields with mines)
 1. Add a timer to measure the game time
 2. Add best times to the local storage and display them on page
 3. Styles need to be worked on
@@ -26,14 +25,14 @@ let fieldsArray = [];
 let minesArray = [];
 
 function placeMine(startingFieldId) {
-    let x = Math.floor(Math.random() * rows);
-    let y = Math.floor(Math.random() * columns);
+    let x = Math.floor(Math.random() * columns);
+    let y = Math.floor(Math.random() * rows);
     let id = "#f" + y.toString() + "-" + x.toString();
     let fld = document.querySelector(id);
 
     if (fld.id.toString() !== startingFieldId && !minesArray.includes(fld.id)) {
-        // fld.className = '';
-        // fld.classList.add("bomb", "field");
+        fld.className = '';
+        fld.classList.add("bomb", "field");
         minesArray.push(fld.id);
     }
     else placeMine(startingFieldId);
@@ -55,8 +54,8 @@ function countSurroundingMines(fld) {
 
     for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
-            if (!(i < 0 || j < 0 || i >= rows || j >= columns)) {
-                if (minesArray.includes(fieldsArray[j][i].id) && fieldsArray[j][i].id.toString() !== fld.id.toString()) {
+            if (!(i < 0 || j < 0 || i >= columns || j >= rows)) {
+                if (minesArray.includes(fieldsArray[j][i].id) && fieldsArray[j][i].id !== fld.id) {
                     howMany++;
                 }
             }
@@ -72,7 +71,7 @@ function countSurroundingMines(fld) {
             fld.classList.add("clicked");
             for (let i = x - 1; i <= x + 1; i++) {
                 for (let j = y - 1; j <= y + 1; j++) {
-                    if (!(i < 0 || j < 0 || i >= rows || j >= columns)) {
+                    if (!(i < 0 || j < 0 || i >= columns || j >= rows)) {
                         countSurroundingMines(fieldsArray[j][i]);
                     }
                 }
