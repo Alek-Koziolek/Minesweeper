@@ -18,10 +18,12 @@ minefield.addEventListener("contextmenu", event => event.preventDefault());
 let columns = 8;
 let rows = 8;
 let mines = 10;
+let flags = mines;
 ////////////////
 
 let firstMove = false;
 let fieldsArray = [];
+let minesArray = [];
 
 function placeMine(startingFieldId) {
     let x = Math.floor(Math.random() * rows);
@@ -29,9 +31,10 @@ function placeMine(startingFieldId) {
     let id = "#f" + y.toString() + "-" + x.toString();
     let fld = document.querySelector(id);
 
-    if (fld.id.toString() !== startingFieldId && !fld.classList.contains("bomb")) {
-        fld.className = '';
-        fld.classList.add("bomb", "field");
+    if (fld.id.toString() !== startingFieldId && !minesArray.includes(fld.id)) {
+        // fld.className = '';
+        // fld.classList.add("bomb", "field");
+        minesArray.push(fld.id);
     }
     else placeMine(startingFieldId);
 }
@@ -53,7 +56,7 @@ function countSurroundingMines(fld) {
     for (let i = x - 1; i <= x + 1; i++) {
         for (let j = y - 1; j <= y + 1; j++) {
             if (!(i < 0 || j < 0 || i >= rows || j >= columns)) {
-                if (fieldsArray[j][i].classList.contains("bomb") && fieldsArray[j][i].id.toString() !== fld.id.toString()) {
+                if (minesArray.includes(fieldsArray[j][i].id) && fieldsArray[j][i].id.toString() !== fld.id.toString()) {
                     howMany++;
                 }
             }
@@ -117,6 +120,7 @@ function initializeField(option) {
             return;
     }
 
+    flags = mines;
     tilesLeft.innerText = (columns * rows - mines).toString();
 
     while (minefield.firstChild) {
@@ -124,6 +128,7 @@ function initializeField(option) {
     }
 
     fieldsArray = [];
+    minesArray = [];
     for (let r = 0; r < rows; r++) {
         let row = [];
         for (let c = 0; c < columns; c++) {
@@ -145,20 +150,21 @@ function initializeField(option) {
                 if (fld.classList.contains("flag")) {
                     fld.className = '';
                     fld.classList.add("field", "uncertain");
+                    flags += 1;
                 }
                 else if (fld.classList.contains("uncertain")) {
                     fld.className = '';
                     fld.classList.add("field");
                 }
-                else {
+                else if(flags > 0){
                     fld.className = '';
                     fld.classList.add("field", "flag");
+                    flags -= 1;
                 }
-
             }
             else if (event.button === 0) {
                 if (firstMove) generateMines(fld.id.toString());
-                if (!fld.classList.contains("bomb")) countSurroundingMines(fld);
+                if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
                 else gameOver(false);
                 if (tilesLeft.innerText === "0") gameOver(true);
             }
