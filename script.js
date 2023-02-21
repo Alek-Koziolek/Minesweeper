@@ -1,15 +1,14 @@
 const minefield = document.querySelector("#minefield");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
-const tryAgainBtn = document.querySelector("#try-again-btn");
-const gameOverBoard = document.querySelector("#game-over-div");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
-//default size
+//DEFAULT VALUES
 let columns = 8;
 let rows = 8;
 let mines = 10;
+////////////////
 
 let firstMove = false;
 let fieldsArray = [];
@@ -55,7 +54,17 @@ function countSurroundingMines(fld) {
             fld.innerText = howMany;
             fld.classList.add("bomb" + howMany.toString(), "clicked");
         }
-        else fld.classList.add("clicked");
+        else {
+            fld.classList.add("clicked");
+            for (let i = x - 1; i <= x + 1; i++) {
+                for (let j = y - 1; j <= y + 1; j++) {
+                    if (!(i < 0 || j < 0 || i >= rows || j >= columns)) {
+                        countSurroundingMines(fieldsArray[j][i]);
+                    }
+                }
+            }
+
+        }
     }
 }
 
@@ -127,8 +136,6 @@ function initializeField(option) {
             else if (event.button === 0) {
                 if (firstMove) generateMines(fld.id.toString());
                 countSurroundingMines(fld);
-                if (fld.classList.contains("bomb")) gameOverBoard.style.visibility = "visible"
-
             }
         })
     });
@@ -138,11 +145,6 @@ initializeField('1');
 
 restartBtn.addEventListener("click", () => {
     initializeField(selectDiff.options[selectDiff.selectedIndex].value);
-});
-
-tryAgainBtn.addEventListener("click", () => {
-    initializeField(selectDiff.options[selectDiff.selectedIndex].value);
-    gameOverBoard.style.display = "none";
 });
 
 document.addEventListener('keyup', (event) => {
