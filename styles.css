@@ -118,6 +118,10 @@ header {
     cursor: pointer;
 }
 
+.field img {
+    height: 1.2em;
+}
+
 .flag {
     background-color: red;
 }
@@ -127,9 +131,7 @@ header {
 }
 
 .bomb {
-    background-color: black;
-    border: 1px solid white;
-    border-radius: 50%;
+    background-color: red;
 }
 
 .clicked {
