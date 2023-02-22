@@ -87,17 +87,22 @@ function gameOver(win) {
         minesArray.forEach(fldId => {
             const mineImage = document.createElement("img");
             mineImage.src = "./Images/mine.svg";
-            document.querySelector("#" + fldId).appendChild(mineImage);
+            const temp = document.querySelector("#" + fldId);
+            temp.innerText = '';
+            temp.appendChild(mineImage);
+            temp.className = '';
+            temp.classList.add("field");
         })
     }
-    else{
+    else {
         tilesLeft.innerText = "Congratulations, You Win!";
         minesArray.forEach(fldId => {
             const temp = document.querySelector("#" + fldId);
             temp.className = '';
             temp.classList.add("field", "flag");
+            temp.innerText = '';
         })
-    } 
+    }
 
     minefield.style.pointerEvents = "none";
 }
@@ -169,7 +174,7 @@ function initializeField(option) {
                     fld.classList.add("field");
                     fld.innerText = '';
                 }
-                else if(flags > 0){
+                else if (flags > 0) {
                     fld.className = '';
                     fld.classList.add("field", "flag");
                     flags -= 1;
@@ -178,10 +183,10 @@ function initializeField(option) {
             else if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
                 if (firstMove) generateMines(fld.id.toString());
                 if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
-                else{
+                else {
                     gameOver(false);
                     fld.classList.add("bomb");
-                } 
+                }
                 if (tilesLeft.innerText === "0") gameOver(true);
             }
         })
