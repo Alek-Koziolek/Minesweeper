@@ -1,15 +1,15 @@
 /*
 TODO:
-1. Add a timer to measure the game time
-2. Add best times to the local storage and display them on page
-3. Styles need to be worked on
-4. Maybe add a fancy way of revealing mines upon losing the game
+1. Add best times to the local storage and display them on page
+2. Styles need to be worked on
 */
 
 const minefield = document.querySelector("#minefield");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
 const tilesLeft = document.querySelector("#tiles-left");
+const gameOverText = document.querySelector("#game-over-text");
+const timeSpan = document.querySelector("#game-time");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -76,14 +76,13 @@ function countSurroundingMines(fld) {
                     }
                 }
             }
-
         }
     }
 }
 
 function gameOver(win) {
     if (!win) {
-        tilesLeft.innerText = "Game Over";
+        gameOverText.innerText = "Game Over";
         minesArray.forEach(fldId => {
             const mineImage = document.createElement("img");
             mineImage.src = "./Images/mine.svg";
@@ -95,7 +94,7 @@ function gameOver(win) {
         })
     }
     else {
-        tilesLeft.innerText = "Congratulations, You Win!";
+        gameOverText.innerText = "Congratulations, You Win!";
         minesArray.forEach(fldId => {
             const temp = document.querySelector("#" + fldId);
             temp.className = '';
@@ -103,13 +102,18 @@ function gameOver(win) {
             temp.innerText = '';
         })
     }
-
     minefield.style.pointerEvents = "none";
+    gameOverText.style.visibility = "visible";
+}
+
+function gameTimer() {
+    timeSpan.innerText = (parseInt(timeSpan.innerText) + 1).toString();
 }
 
 function initializeField(option) {
     minefield.style.pointerEvents = "auto";
-
+    timeSpan.innerText = '0';
+    gameOverText.style.visibility = "hidden";
     switch (option) {
         case '1':
             columns = 8;
@@ -160,6 +164,7 @@ function initializeField(option) {
 
     let fields = document.querySelectorAll(".field");
 
+    let timer = null;
     fields.forEach(fld => {
         fld.addEventListener("mouseup", (event) => {
             if (event.button === 2 && !fld.classList.contains("clicked")) {
@@ -181,13 +186,20 @@ function initializeField(option) {
                 }
             }
             else if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
-                if (firstMove) generateMines(fld.id.toString());
+                if (firstMove) {
+                    generateMines(fld.id.toString());
+                    timer = setInterval(gameTimer, 1000);
+                }
                 if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
                 else {
                     gameOver(false);
                     fld.classList.add("bomb");
+                    clearInterval(timer);
                 }
-                if (tilesLeft.innerText === "0") gameOver(true);
+                if (tilesLeft.innerText === "0") {
+                    gameOver(true);
+                    clearInterval(timer);
+                }
             }
         })
     });
