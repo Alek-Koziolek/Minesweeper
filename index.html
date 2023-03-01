@@ -7,6 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minesweeper</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <script src="script.js" defer></script>
 </head>
 
@@ -29,14 +33,16 @@
         </div>
     </header>
     <div id="board-wrap">
-        <h1 id="game-over-text"></h1>
-        <h2>Tiles Left: <span id="tiles-left"></span></h2>
-        <h2>Time: <span id="game-time">0</span></h2>
         <div id="board">
+            <div id="stats">
+                <p>Tiles Left: <span id="tiles-left"></span></p>
+                <p>Time: <span id="game-time">0</span></p>
+            </div>
             <div id="minefield">
             </div>
         </div>
     </div>
+    <footer></footer>
 </body>
 
 </html>

@@ -5,10 +5,10 @@ TODO:
 */
 
 const minefield = document.querySelector("#minefield");
+const board = document.querySelector("#board");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
 const tilesLeft = document.querySelector("#tiles-left");
-const gameOverText = document.querySelector("#game-over-text");
 const timeSpan = document.querySelector("#game-time");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
@@ -23,6 +23,7 @@ let flags = mines;
 let firstMove = false;
 let fieldsArray = [];
 let minesArray = [];
+let timer = null;
 
 function placeMine(startingFieldId) {
     let x = Math.floor(Math.random() * columns);
@@ -82,7 +83,7 @@ function countSurroundingMines(fld) {
 
 function gameOver(win) {
     if (!win) {
-        gameOverText.innerText = "Game Over";
+        board.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
         minesArray.forEach(fldId => {
             const mineImage = document.createElement("img");
             mineImage.src = "./Images/mine.svg";
@@ -94,7 +95,7 @@ function gameOver(win) {
         })
     }
     else {
-        gameOverText.innerText = "Congratulations, You Win!";
+        board.style.backgroundColor = "rgba(0, 255, 0, 0.5)";
         minesArray.forEach(fldId => {
             const temp = document.querySelector("#" + fldId);
             temp.className = '';
@@ -103,7 +104,6 @@ function gameOver(win) {
         })
     }
     minefield.style.pointerEvents = "none";
-    gameOverText.style.visibility = "visible";
 }
 
 function gameTimer() {
@@ -113,7 +113,7 @@ function gameTimer() {
 function initializeField(option) {
     minefield.style.pointerEvents = "auto";
     timeSpan.innerText = '0';
-    gameOverText.style.visibility = "hidden";
+    board.style.backgroundColor = "rgb(255, 255, 255)";
     switch (option) {
         case '1':
             columns = 8;
@@ -164,7 +164,6 @@ function initializeField(option) {
 
     let fields = document.querySelectorAll(".field");
 
-    let timer = null;
     fields.forEach(fld => {
         fld.addEventListener("mouseup", (event) => {
             if (event.button === 2 && !fld.classList.contains("clicked")) {
@@ -207,11 +206,12 @@ function initializeField(option) {
 
 initializeField('1');
 
-restartBtn.addEventListener("click", () => {
+restartBtn.addEventListener("click", event => {
     initializeField(selectDiff.options[selectDiff.selectedIndex].value);
+    clearInterval(timer);
 });
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keyup', event => {
     if (event.key === "r") {
         initializeField(selectDiff.options[selectDiff.selectedIndex].value);
     }
