@@ -16,7 +16,7 @@
 
 <body>
     <header>
-        <div class="title">
+        <div id="title">
             <h1>Minesweeper</h1>
             <p>by <a href="https://github.com/Alek-Koziolek" target="_blank">Alek Koziołek</a></p>
         </div>
@@ -29,7 +29,9 @@
                     <option value="3">Expert</option>
                 </select>
             </div>
-            <button id="restart-btn" title="Click or use 'r' button to restart">Restart</button>
+            <div id="btn-div">
+                <button id="restart-btn" title="Click or use 'r' button to restart">Restart</button>
+            </div>
         </div>
     </header>
     <div id="board-wrap">
@@ -41,13 +43,11 @@
             <div id="minefield">
             </div>
         </div>
-        <div>
+        <div id="times-div">
             <label for="#best-times" id="best-times-label">Your Best Times:</label>
             <ol id="best-times">
-                <li>test</li>
             </ol>
         </div>
-
     </div>
     <footer></footer>
 </body>

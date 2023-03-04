@@ -1,5 +1,7 @@
 :root {
     --header-height: 70px;
+    --primary-color: rgb(0, 162, 255);
+    --secondary-color: rgb(245, 245, 245);
 }
 
 * {
@@ -18,38 +20,97 @@ body {
 header {
     width: inherit;
     height: var(--header-height);
-    padding: 5px 10px;
+    padding: 5px 20px;
 
-    /* position: sticky;
-    top: 0; */
     display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-direction: row;
-    gap: 20px;
-    
-    background-color: rgb(0, 162, 255);
+
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
 }
 
 #options {
+    height: inherit;
     display: flex;
     flex-direction: row;
+    align-items: center;
+    gap: 20px;
+
+    font-size: 1.2em;
+    font-weight: 500;
 }
 
 #select-div {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 5px;
 }
 
-.title {
-    color: whitesmoke;
+#select-difficulty {
+    border: 1px solid var(--secondary-color);
+    padding: 2px 5px;
+    color: var(--secondary-color);
+    background-color: var(--primary-color);
+    cursor: pointer;
+
+    font-size: 0.75em;
+    font-family: inherit;
+
+    transition: color 0.7s;
 }
 
-.title a {
+#select-difficulty:focus {
+    color: var(--main-color);
+    background-color: var(--secondary-color);
+}
+
+#select-difficulty option{
+    background-color: var(--secondary-color);
+    color: var(--main-color);
+}
+
+#btn-div {
+    height: calc(100% - 10px);
+    display: inline-flex;
+}
+
+#restart-btn {
+    border: 1px solid var(--secondary-color);
+    padding: 0 20px;
+
+    color: var(--secondary-color);
+    background-color: var(--primary-color);
+    cursor: pointer;
+    transition: color 0.7s;
+    transition: background-color 0.7s;
+
+    font-size: 0.9em;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+#restart-btn:hover {
+    transition: color 0.7s;
+    transition: background-color 0.7s;
+    color: var(--main-color);
+    background-color: var(--secondary-color);
+}
+
+#title {
+    padding-right: 20px;
+}
+
+#title a {
     text-decoration: none;
-    color: whitesmoke;
+    color: var(--secondary-color);
     transition: color 0.5s;
+    font-weight: 500;
 }
 
-.title a:hover {
+#title a:hover {
     color: rgb(0, 0, 200);
 }
 
@@ -57,10 +118,54 @@ footer {
     width: inherit;
     height: calc(var(--header-height)/2);
 
-    position:fixed;
+    position: fixed;
     bottom: 0;
 
-    background-color: rgb(0, 162, 255);
+    background-color: var(--primary-color);
+}
+
+#times-div {
+    padding: 10px 20px 70px 20px;
+}
+
+#best-times {
+    list-style: none;
+    counter-reset: item;
+}
+
+#best-times li {
+    counter-increment: item;
+    margin: 10px auto;
+    background: linear-gradient(
+        90deg,
+        rgba(0, 162, 255, 0.15) 0%,
+        var(--secondary-color)
+    );
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+#best-times li:before {
+    width: 1.2em;
+    margin-right: 10px;
+    content: counter(item);
+    display: inline-block;
+    text-align: center;
+
+    background: var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: 600;
+}
+
+#best-times-label {
+    font-size: 2em;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+#best-times p {
+    font-size: 1.2em;
+    font-weight: 500;
 }
 
 #board-wrap {
@@ -69,8 +174,10 @@ footer {
 
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 3em;
     align-items: center;
+
+    background-color: var(--secondary-color);
 }
 
 #stats {
@@ -97,9 +204,10 @@ footer {
 #board {
     width: fit-content;
     height: fit-content;
+    margin-top: 10%;
     padding: 0.5em 1em 1em 1em;
     border: 1px solid black;
-    
+
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -110,7 +218,7 @@ footer {
     padding: 2px;
     background-color: black;
 
-    width:fit-content;
+    width: fit-content;
     display: grid;
     gap: 2px;
 

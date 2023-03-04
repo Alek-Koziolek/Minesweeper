@@ -5,7 +5,6 @@ const restartBtn = document.querySelector("#restart-btn");
 const tilesLeft = document.querySelector("#tiles-left");
 const timeSpan = document.querySelector("#game-time");
 const bestTimesList = document.querySelector("#best-times");
-const bestTimesLabel = document.querySelector("#best-times-label");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -28,8 +27,8 @@ function placeMine(startingFieldId) {
     let fld = document.querySelector(id);
 
     if (fld.id.toString() !== startingFieldId && !minesArray.includes(fld.id)) {
-        // fld.className = '';
-        // fld.classList.add("bomb", "field");
+        fld.className = '';
+        fld.classList.add("bomb", "field");
         minesArray.push(fld.id);
     }
     else placeMine(startingFieldId);
@@ -76,10 +75,6 @@ function countSurroundingMines(fld) {
         }
     }
 }
-
-let beginnerTimes = [];
-let intermediateTimes = [];
-let expertTimes = [];
 
 function gameOver(win) {
     if (!win) {
@@ -221,17 +216,22 @@ document.addEventListener('keyup', event => {
 });
 
 function updateBestTimes(option) {
-
-    let timesArray = null;
+    let timesArray = [];
     switch (option) {
         case '1':
-            timesArray = beginnerTimes;
+            if (localStorage.getItem("beginnerTimesArray") !== null) {
+                timesArray = JSON.parse(localStorage.getItem("beginnerTimesArray"));
+            }
             break;
         case '2':
-            timesArray = intermediateTimes;
+            if (localStorage.getItem("intermediateTimesArray") !== null) {
+                timesArray = JSON.parse(localStorage.getItem("intermediateTimesArray"));
+            }
             break;
         case '3':
-            timesArray = expertTimes;
+            if (localStorage.getItem("expertTimesArray") !== null) {
+                timesArray = JSON.parse(localStorage.getItem("expertTimesArray"));
+            }
             break;
         default:
             return;
@@ -241,29 +241,49 @@ function updateBestTimes(option) {
         bestTimesList.firstChild.remove();
     }
 
-    timesArray.forEach(element => {
-        const olElem = document.createElement("li");
-        olElem.textContent = element.toString() + 's';
-        bestTimesList.appendChild(olElem);
-    })
+    if (timesArray.length > 0) {
+        timesArray.forEach(element => {
+            const olElem = document.createElement("li");
+            olElem.textContent = element.toString() + 's';
+            bestTimesList.appendChild(olElem);
+        });
+    } else {
+        const placeholder = document.createElement("p");
+        placeholder.innerHTML = "Win a game to set a new <b>best time</b>!";
+        bestTimesList.appendChild(placeholder);
+    }
+
 }
 
 function addBestTime(option, time) {
+    let timesArray = [];
     switch (option) {
         case '1':
-            beginnerTimes.push(time);
-            beginnerTimes.sort(function (a, b) { return a - b });
-            updateBestTimes(beginnerTimes.splice(5,));
+            if (localStorage.getItem("beginnerTimesArray") !== null) {
+                timesArray = JSON.parse(localStorage.getItem("beginnerTimesArray"));
+            }
+            timesArray.push(time);
+            timesArray.sort(function (a, b) { return a - b });
+            timesArray.splice(5,);
+            localStorage.setItem("beginnerTimesArray", JSON.stringify(timesArray));
             break;
         case '2':
-            intermediateTimes.push(time);
-            intermediateTimes.sort(function (a, b) { return a - b });
-            updateBestTimes(intermediateTimes.splice(5,));
+            if (localStorage.getItem("intermediateTimesArray") !== null) {
+                timesArray = JSON.parse(localStorage.getItem("intermediateTimesArray"));
+            }
+            timesArray.push(time);
+            timesArray.sort(function (a, b) { return a - b });
+            timesArray.splice(5,);
+            localStorage.setItem("intermediateTimesArray", JSON.stringify(timesArray));
             break;
         case '3':
-            expertTimes.push(time);
-            expertTimes.sort(function (a, b) { return a - b });
-            updateBestTimes(expertTimes.splice(5,));
+            if (localStorage.getItem("expertTimesArray") !== null) {
+                timesArray = JSON.parse(localStorage.getItem("expertTimesArray"));
+            }
+            timesArray.push(time);
+            timesArray.sort(function (a, b) { return a - b });
+            timesArray.splice(5,);
+            localStorage.setItem("expertTimesArray", JSON.stringify(timesArray));
             break;
         default:
             return;
