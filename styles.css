@@ -82,7 +82,7 @@ header {
     display: inline-flex;
 }
 
-#restart-btn {
+#restart-btn, #mobile-mode-btn {
     border: 1px solid var(--secondary-color);
     padding: 0 20px;
 
@@ -97,11 +97,34 @@ header {
     font-weight: 600;
 }
 
-#restart-btn:hover {
+#restart-btn:hover, #mobile-mode-btn:hover {
     transition: color 0.7s;
     transition: background-color 0.7s;
     color: var(--primary-color);
     background-color: var(--secondary-color);
+}
+
+#flag-mode-btn {
+    border: 1px solid black;
+    padding: 10px 20px;
+    margin-top: 10px;
+    color: black;
+    background-color: var(--secondary-color);
+    cursor: pointer;
+
+    font-size: 1em;
+    font-family: inherit;
+    font-weight: 600;
+
+    transition: color 0.7s;
+    transition: background-color 0.7s;
+
+    display: none;
+}
+
+#mobile-mode-btn:hover {
+    transition: color 0.7s;
+    transition: background-color 0.7s;
 }
 
 #title {
@@ -312,7 +335,7 @@ footer {
 
 /* ======== */
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 510px) {
     :root {
         --header-height: 140px;
     }
@@ -322,7 +345,7 @@ footer {
     }
 
     #title {
-        width: 235px;
+        width: 290px;
     }
 
     #board {

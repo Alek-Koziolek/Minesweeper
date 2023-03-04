@@ -5,6 +5,8 @@ const restartBtn = document.querySelector("#restart-btn");
 const tilesLeft = document.querySelector("#tiles-left");
 const timeSpan = document.querySelector("#game-time");
 const bestTimesList = document.querySelector("#best-times");
+const flagModeBtn = document.querySelector("#flag-mode-btn");
+const mobileModeBtn = document.querySelector("#mobile-mode-btn");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -19,6 +21,7 @@ let firstMove = false;
 let fieldsArray = [];
 let minesArray = [];
 let timer = null;
+let placeFlags = false;
 
 function placeMine(startingFieldId) {
     let x = Math.floor(Math.random() * columns);
@@ -162,40 +165,49 @@ function initializeField(option) {
 
     let fields = document.querySelectorAll(".field");
 
+    function rightClickOperations(fld) {
+        if (fld.classList.contains("flag")) {
+            fld.className = '';
+            fld.classList.add("field", "uncertain");
+            flags += 1;
+            fld.innerText = '?';
+        }
+        else if (fld.classList.contains("uncertain")) {
+            fld.className = '';
+            fld.classList.add("field");
+            fld.innerText = '';
+        }
+        else if (flags > 0) {
+            fld.className = '';
+            fld.classList.add("field", "flag");
+            flags -= 1;
+        }
+    }
+
     fields.forEach(fld => {
         fld.addEventListener("mouseup", (event) => {
             if (event.button === 2 && !fld.classList.contains("clicked")) {
-                if (fld.classList.contains("flag")) {
-                    fld.className = '';
-                    fld.classList.add("field", "uncertain");
-                    flags += 1;
-                    fld.innerText = '?';
-                }
-                else if (fld.classList.contains("uncertain")) {
-                    fld.className = '';
-                    fld.classList.add("field");
-                    fld.innerText = '';
-                }
-                else if (flags > 0) {
-                    fld.className = '';
-                    fld.classList.add("field", "flag");
-                    flags -= 1;
-                }
+                rightClickOperations(fld);
             }
-            else if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
-                if (firstMove) {
-                    generateMines(fld.id.toString());
-                    timer = setInterval(gameTimer, 1000);
-                }
-                if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
-                else {
-                    gameOver(false);
-                    fld.classList.add("bomb");
-                    clearInterval(timer);
-                }
-                if (tilesLeft.innerText === "0") {
-                    gameOver(true);
-                    clearInterval(timer);
+            else if(event.button === 0 && placeFlags && !fld.classList.contains("clicked")) {
+                rightClickOperations(fld);
+            }
+            else {
+                if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
+                    if (firstMove) {
+                        generateMines(fld.id.toString());
+                        timer = setInterval(gameTimer, 1000);
+                    }
+                    if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
+                    else {
+                        gameOver(false);
+                        fld.classList.add("bomb");
+                        clearInterval(timer);
+                    }
+                    if (tilesLeft.innerText === "0") {
+                        gameOver(true);
+                        clearInterval(timer);
+                    }
                 }
             }
         })
@@ -212,6 +224,32 @@ restartBtn.addEventListener("click", event => {
 document.addEventListener('keyup', event => {
     if (event.key === "r") {
         initializeField(selectDiff.options[selectDiff.selectedIndex].value);
+    }
+});
+
+mobileModeBtn.addEventListener("click", ()=> {
+    if(flagModeBtn.style.display === "none" || flagModeBtn.style.display === "") {
+        flagModeBtn.style.display = "inline-block";
+        mobileModeBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
+        mobileModeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue("--primary-color");
+
+    }
+    else {
+        flagModeBtn.style.display = "none";
+        mobileModeBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--primary-color");
+        mobileModeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
+    }
+});
+
+flagModeBtn.addEventListener("click", ()=> {
+    placeFlags = !placeFlags;
+
+    if(placeFlags) {
+        flagModeBtn.style.backgroundColor = "black";
+        flagModeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
+    } else {
+        flagModeBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
+        flagModeBtn.style.color = "black";
     }
 });
 
