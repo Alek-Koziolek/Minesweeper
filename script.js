@@ -27,8 +27,8 @@ function placeMine(startingFieldId) {
     let fld = document.querySelector(id);
 
     if (fld.id.toString() !== startingFieldId && !minesArray.includes(fld.id)) {
-        fld.className = '';
-        fld.classList.add("bomb", "field");
+        // fld.className = '';
+        // fld.classList.add("bomb", "field");
         minesArray.push(fld.id);
     }
     else placeMine(startingFieldId);
