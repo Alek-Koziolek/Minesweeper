@@ -14,6 +14,7 @@ body {
     width: 100dvw;
     width: 100vw;
 
+    background-color: var(--secondary-color);
     font-family: 'Rajdhani', sans-serif;
 }
 
@@ -42,6 +43,10 @@ header {
     font-weight: 500;
 }
 
+#options label {
+    white-space: nowrap;
+}
+
 #select-div {
     display: flex;
     flex-direction: column;
@@ -67,7 +72,7 @@ header {
     background-color: var(--secondary-color);
 }
 
-#select-difficulty option{
+#select-difficulty option {
     background-color: var(--secondary-color);
     color: var(--primary-color);
 }
@@ -111,7 +116,8 @@ header {
 }
 
 #title a:hover {
-    color: rgb(0, 0, 200);
+    color: var(--secondary-color);
+    text-decoration: underline;
 }
 
 footer {
@@ -125,7 +131,7 @@ footer {
 }
 
 #times-div {
-    padding: 10px 20px 70px 20px;
+    padding: 10px 20px 40px 20px;
 }
 
 #best-times {
@@ -136,11 +142,9 @@ footer {
 #best-times li {
     counter-increment: item;
     margin: 10px auto;
-    background: linear-gradient(
-        90deg,
-        rgba(0, 162, 255, 0.15) 0%,
-        var(--secondary-color)
-    );
+    background: linear-gradient(90deg,
+            rgba(0, 162, 255, 0.15) 0%,
+            var(--secondary-color));
     font-size: 1.1em;
     font-weight: 500;
 }
@@ -158,6 +162,9 @@ footer {
 }
 
 #best-times-label {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
     font-size: 2em;
     font-weight: 600;
     color: var(--primary-color);
@@ -170,14 +177,11 @@ footer {
 
 #board-wrap {
     width: inherit;
-    height: calc(100vh - var(--header-height) * 1.5);
 
     display: flex;
     flex-direction: column;
-    gap: 3em;
+    gap: 1em;
     align-items: center;
-
-    background-color: var(--secondary-color);
 }
 
 #stats {
@@ -190,21 +194,13 @@ footer {
 
 #stats p {
     font-weight: 600;
-    font-size: 1.5em;
-}
-
-#game-over-text {
-    position: absolute;
-    width: 100%;
-    padding: 20px 0;
-    text-align: center;
-    cursor: pointer;
+    font-size: 1.3em;
 }
 
 #board {
     width: fit-content;
     height: fit-content;
-    margin-top: 10%;
+    margin-top: 5%;
     padding: 0.5em 1em 1em 1em;
     border: 1px solid black;
 
@@ -241,7 +237,9 @@ footer {
 }
 
 .field {
-    height: 3vh;
+    height: max(2vw, 25px);
+    max-height: 35px;
+    min-height: 20px;
     aspect-ratio: 1/1;
 
     display: flex;
@@ -313,3 +311,65 @@ footer {
 }
 
 /* ======== */
+
+@media screen and (max-width: 460px) {
+    :root {
+        --header-height: 140px;
+    }
+
+    header {
+        flex-direction: column;
+    }
+
+    #title {
+        width: 235px;
+    }
+
+    #board {
+        min-width: 240px;
+    }
+
+
+    .field {
+        height: 8vw;
+        min-height: 26px;
+    }
+
+    footer {
+        height: calc(var(--header-height)/4);
+    }
+
+    @media screen and (max-height: 800px) {
+        footer {
+            position: static;
+            justify-self: flex-end;
+        }
+    }
+}
+
+@media screen and (max-height: 550px) {
+    body {
+        height: auto;
+    }
+
+    #board-wrap {
+        height: auto;
+    }
+
+    #stats {
+        font-size: 0.8em;
+    }
+
+    .field {
+        height: 2.6vw;
+        max-height: 25px;
+    }
+
+    #board {
+        margin-top: 5%;
+    }
+
+    footer {
+        position: static;
+    }
+}
