@@ -63,13 +63,13 @@ header {
 }
 
 #select-difficulty:focus {
-    color: var(--main-color);
+    color: var(--primary-color);
     background-color: var(--secondary-color);
 }
 
 #select-difficulty option{
     background-color: var(--secondary-color);
-    color: var(--main-color);
+    color: var(--primary-color);
 }
 
 #btn-div {
@@ -95,7 +95,7 @@ header {
 #restart-btn:hover {
     transition: color 0.7s;
     transition: background-color 0.7s;
-    color: var(--main-color);
+    color: var(--primary-color);
     background-color: var(--secondary-color);
 }
 
