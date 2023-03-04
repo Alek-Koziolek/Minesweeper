@@ -1,15 +1,11 @@
-/*
-TODO:
-1. Add best times to the local storage and display them on page
-2. Styles need to be worked on
-*/
-
 const minefield = document.querySelector("#minefield");
 const board = document.querySelector("#board");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
 const tilesLeft = document.querySelector("#tiles-left");
 const timeSpan = document.querySelector("#game-time");
+const bestTimesList = document.querySelector("#best-times");
+const bestTimesLabel = document.querySelector("#best-times-label");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -81,6 +77,10 @@ function countSurroundingMines(fld) {
     }
 }
 
+let beginnerTimes = [];
+let intermediateTimes = [];
+let expertTimes = [];
+
 function gameOver(win) {
     if (!win) {
         board.style.backgroundColor = "rgba(255, 0, 0, 0.5)";
@@ -101,7 +101,8 @@ function gameOver(win) {
             temp.className = '';
             temp.classList.add("field", "flag");
             temp.innerText = '';
-        })
+        });
+        addBestTime(selectDiff.options[selectDiff.selectedIndex].value, parseInt(timeSpan.innerText));
     }
     minefield.style.pointerEvents = "none";
 }
@@ -114,6 +115,8 @@ function initializeField(option) {
     minefield.style.pointerEvents = "auto";
     timeSpan.innerText = '0';
     board.style.backgroundColor = "rgb(255, 255, 255)";
+    updateBestTimes(option);
+
     switch (option) {
         case '1':
             columns = 8;
@@ -216,3 +219,54 @@ document.addEventListener('keyup', event => {
         initializeField(selectDiff.options[selectDiff.selectedIndex].value);
     }
 });
+
+function updateBestTimes(option) {
+
+    let timesArray = null;
+    switch (option) {
+        case '1':
+            timesArray = beginnerTimes;
+            break;
+        case '2':
+            timesArray = intermediateTimes;
+            break;
+        case '3':
+            timesArray = expertTimes;
+            break;
+        default:
+            return;
+    }
+
+    while (bestTimesList.firstChild) {
+        bestTimesList.firstChild.remove();
+    }
+
+    timesArray.forEach(element => {
+        const olElem = document.createElement("li");
+        olElem.textContent = element.toString() + 's';
+        bestTimesList.appendChild(olElem);
+    })
+}
+
+function addBestTime(option, time) {
+    switch (option) {
+        case '1':
+            beginnerTimes.push(time);
+            beginnerTimes.sort(function (a, b) { return a - b });
+            updateBestTimes(beginnerTimes.splice(5,));
+            break;
+        case '2':
+            intermediateTimes.push(time);
+            intermediateTimes.sort(function (a, b) { return a - b });
+            updateBestTimes(intermediateTimes.splice(5,));
+            break;
+        case '3':
+            expertTimes.push(time);
+            expertTimes.sort(function (a, b) { return a - b });
+            updateBestTimes(expertTimes.splice(5,));
+            break;
+        default:
+            return;
+    }
+    updateBestTimes(option);
+}
