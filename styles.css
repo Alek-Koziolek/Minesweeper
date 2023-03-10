@@ -354,9 +354,3 @@ footer {
         justify-self: center;
     }
 }
-
-@media screen and (width > 100vw) {
-    body {
-        background-color: aquamarine;
-    }
-}
