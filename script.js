@@ -115,7 +115,6 @@ function gameTimer() {
 function initializeField() {
     minefield.style.pointerEvents = "auto"; //allows to click on the minefield
     timeSpan.innerText = '0';
-    minesLeft.innerText = flags.toString();
     board.style.backgroundColor = secondaryColor;
     currentGameDiff = selectDiff.options[selectDiff.selectedIndex].value;
     updateBestTimes(currentGameDiff);
@@ -145,9 +144,10 @@ function initializeField() {
         default:
             return;
     }
-
+    
     flags = mines;
     tilesLeft= columns * rows - mines;
+    minesLeft.innerText = flags.toString();
 
     while (minefield.firstChild) {
         minefield.firstChild.remove();
@@ -330,7 +330,7 @@ flagModeBtn.addEventListener("click", () => {
     placeFlags = !placeFlags;
 
     if (placeFlags) {
-        flagModeBtn.style.backgroundColor = "black";
+        flagModeBtn.style.backgroundColor = "red";
         flagModeBtn.style.color = secondaryColor;
     } else {
         flagModeBtn.style.backgroundColor = secondaryColor;
