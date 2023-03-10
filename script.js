@@ -2,11 +2,14 @@ const minefield = document.querySelector("#minefield");
 const board = document.querySelector("#board");
 const selectDiff = document.querySelector("#select-difficulty");
 const restartBtn = document.querySelector("#restart-btn");
-const tilesLeft = document.querySelector("#tiles-left");
+const minesLeft = document.querySelector("#mines-left");
 const timeSpan = document.querySelector("#game-time");
 const bestTimesList = document.querySelector("#best-times");
 const flagModeBtn = document.querySelector("#flag-mode-btn");
 const mobileModeBtn = document.querySelector("#mobile-mode-btn");
+
+const primaryColor = getComputedStyle(document.documentElement).getPropertyValue("--primary-color");
+const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
 
 minefield.addEventListener("contextmenu", event => event.preventDefault());
 
@@ -15,8 +18,8 @@ let columns = 8;
 let rows = 8;
 let mines = 10;
 let flags = mines;
-////////////////
-
+let tilesLeft = columns * rows - mines;
+let currentGameDiff = 1;
 let firstMove = false;
 let fieldsArray = [];
 let minesArray = [];
@@ -30,8 +33,7 @@ function placeMine(startingFieldId) {
     let fld = document.querySelector(id);
 
     if (fld.id.toString() !== startingFieldId && !minesArray.includes(fld.id)) {
-        // fld.className = '';
-        // fld.classList.add("bomb", "field");
+        // fld.style.backgroundColor = "red"; //Uncomment to reveal bombs
         minesArray.push(fld.id);
     }
     else placeMine(startingFieldId);
@@ -61,7 +63,7 @@ function countSurroundingMines(fld) {
         }
     }
     if (!fld.classList.contains("clicked")) {
-        tilesLeft.innerText = tilesLeft.innerText - 1;
+        tilesLeft--;
         if (howMany !== 0) {
             fld.innerText = howMany;
             fld.classList.add("bomb" + howMany.toString(), "clicked");
@@ -93,6 +95,7 @@ function gameOver(win) {
         })
     }
     else {
+        minesLeft.innerText = '0';
         board.style.backgroundColor = "rgba(0, 255, 0, 0.5)";
         minesArray.forEach(fldId => {
             const temp = document.querySelector("#" + fldId);
@@ -100,22 +103,24 @@ function gameOver(win) {
             temp.classList.add("field", "flag");
             temp.innerText = '';
         });
-        addBestTime(selectDiff.options[selectDiff.selectedIndex].value, parseInt(timeSpan.innerText));
+        addBestTime(currentGameDiff, parseInt(timeSpan.innerText));
     }
-    minefield.style.pointerEvents = "none";
+    minefield.style.pointerEvents = "none"; //blocks clicking on the minefield
 }
 
 function gameTimer() {
     timeSpan.innerText = (parseInt(timeSpan.innerText) + 1).toString();
 }
 
-function initializeField(option) {
-    minefield.style.pointerEvents = "auto";
+function initializeField() {
+    minefield.style.pointerEvents = "auto"; //allows to click on the minefield
     timeSpan.innerText = '0';
-    board.style.backgroundColor = "rgb(255, 255, 255)";
-    updateBestTimes(option);
+    minesLeft.innerText = flags.toString();
+    board.style.backgroundColor = secondaryColor;
+    currentGameDiff = selectDiff.options[selectDiff.selectedIndex].value;
+    updateBestTimes(currentGameDiff);
 
-    switch (option) {
+    switch (currentGameDiff) {
         case '1':
             columns = 8;
             rows = 8;
@@ -142,7 +147,7 @@ function initializeField(option) {
     }
 
     flags = mines;
-    tilesLeft.innerText = (columns * rows - mines).toString();
+    tilesLeft= columns * rows - mines;
 
     while (minefield.firstChild) {
         minefield.firstChild.remove();
@@ -170,6 +175,7 @@ function initializeField(option) {
             fld.className = '';
             fld.classList.add("field", "uncertain");
             flags += 1;
+            minesLeft.innerText = flags.toString();
             fld.innerText = '?';
         }
         else if (fld.classList.contains("uncertain")) {
@@ -181,78 +187,40 @@ function initializeField(option) {
             fld.className = '';
             fld.classList.add("field", "flag");
             flags -= 1;
+            minesLeft.innerText = flags.toString();
         }
     }
 
     fields.forEach(fld => {
         fld.addEventListener("mouseup", (event) => {
-            if (event.button === 2 && !fld.classList.contains("clicked")) {
+            if (placeFlags) {
                 rightClickOperations(fld);
             }
-            else if(event.button === 0 && placeFlags && !fld.classList.contains("clicked")) {
+            else if (event.button === 2 && !fld.classList.contains("clicked")) {
                 rightClickOperations(fld);
             }
-            else {
-                if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
-                    if (firstMove) {
-                        generateMines(fld.id.toString());
-                        timer = setInterval(gameTimer, 1000);
-                    }
-                    if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
-                    else {
-                        gameOver(false);
-                        fld.classList.add("bomb");
-                        clearInterval(timer);
-                    }
-                    if (tilesLeft.innerText === "0") {
-                        gameOver(true);
-                        clearInterval(timer);
-                    }
+            else if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
+                if (firstMove) {
+                    generateMines(fld.id.toString());
+                    timer = setInterval(gameTimer, 1000);
                 }
+                if (!minesArray.includes(fld.id)) countSurroundingMines(fld);
+                else {
+                    gameOver(false);
+                    fld.style.backgroundColor = "red";
+                    clearInterval(timer);
+                }
+                if (tilesLeft === 0) {
+                    gameOver(true);
+                    clearInterval(timer);
+                }
+
             }
         })
     });
 }
 
-initializeField('1');
-
-restartBtn.addEventListener("click", event => {
-    initializeField(selectDiff.options[selectDiff.selectedIndex].value);
-    clearInterval(timer);
-});
-
-document.addEventListener('keyup', event => {
-    if (event.key === "r") {
-        initializeField(selectDiff.options[selectDiff.selectedIndex].value);
-    }
-});
-
-mobileModeBtn.addEventListener("click", ()=> {
-    if(flagModeBtn.style.display === "none" || flagModeBtn.style.display === "") {
-        flagModeBtn.style.display = "inline-block";
-        mobileModeBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
-        mobileModeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue("--primary-color");
-
-    }
-    else {
-        flagModeBtn.style.display = "none";
-        mobileModeBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--primary-color");
-        mobileModeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
-    }
-});
-
-flagModeBtn.addEventListener("click", ()=> {
-    placeFlags = !placeFlags;
-
-    if(placeFlags) {
-        flagModeBtn.style.backgroundColor = "black";
-        flagModeBtn.style.color = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
-    } else {
-        flagModeBtn.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--secondary-color");
-        flagModeBtn.style.color = "black";
-    }
-});
-
+// LocalStorage related functions
 function updateBestTimes(option) {
     let timesArray = [];
     switch (option) {
@@ -282,7 +250,10 @@ function updateBestTimes(option) {
     if (timesArray.length > 0) {
         timesArray.forEach(element => {
             const olElem = document.createElement("li");
-            olElem.textContent = element.toString() + 's';
+            let minutes = Math.floor(element / 60);
+            let seconds = element - minutes * 60;
+            if (minutes) olElem.textContent = minutes + 'm ' + seconds + 's';
+            else olElem.textContent = seconds + 's';
             bestTimesList.appendChild(olElem);
         });
     } else {
@@ -328,3 +299,43 @@ function addBestTime(option, time) {
     }
     updateBestTimes(option);
 }
+
+// Event Listeners
+restartBtn.addEventListener("click", event => {
+    initializeField();
+    clearInterval(timer);
+});
+
+document.addEventListener('keyup', event => {
+    if (event.key === "r") {
+        initializeField();
+        clearInterval(timer);
+    }
+});
+
+mobileModeBtn.addEventListener("click", () => {
+    if (flagModeBtn.style.display === "none" || flagModeBtn.style.display === "") {
+        flagModeBtn.style.display = "inline-block";
+        mobileModeBtn.style.backgroundColor = secondaryColor;
+        mobileModeBtn.style.color = primaryColor;
+    }
+    else {
+        flagModeBtn.style.display = "none";
+        mobileModeBtn.style.backgroundColor = primaryColor;
+        mobileModeBtn.style.color = secondaryColor;
+    }
+});
+
+flagModeBtn.addEventListener("click", () => {
+    placeFlags = !placeFlags;
+
+    if (placeFlags) {
+        flagModeBtn.style.backgroundColor = "black";
+        flagModeBtn.style.color = secondaryColor;
+    } else {
+        flagModeBtn.style.backgroundColor = secondaryColor;
+        flagModeBtn.style.color = "black";
+    }
+});
+
+initializeField();
