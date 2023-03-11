@@ -144,9 +144,9 @@ function initializeField() {
         default:
             return;
     }
-    
+
     flags = mines;
-    tilesLeft= columns * rows - mines;
+    tilesLeft = columns * rows - mines;
     minesLeft.innerText = flags.toString();
 
     while (minefield.firstChild) {
@@ -171,23 +171,25 @@ function initializeField() {
     let fields = document.querySelectorAll(".field");
 
     function rightClickOperations(fld) {
-        if (fld.classList.contains("flag")) {
-            fld.className = '';
-            fld.classList.add("field", "uncertain");
-            flags += 1;
-            minesLeft.innerText = flags.toString();
-            fld.innerText = '?';
-        }
-        else if (fld.classList.contains("uncertain")) {
-            fld.className = '';
-            fld.classList.add("field");
-            fld.innerText = '';
-        }
-        else if (flags > 0) {
-            fld.className = '';
-            fld.classList.add("field", "flag");
-            flags -= 1;
-            minesLeft.innerText = flags.toString();
+        if (!fld.classList.contains("clicked")) {
+            if (fld.classList.contains("flag")) {
+                fld.className = '';
+                fld.classList.add("field", "uncertain");
+                flags += 1;
+                minesLeft.innerText = flags.toString();
+                fld.innerText = '?';
+            }
+            else if (fld.classList.contains("uncertain")) {
+                fld.className = '';
+                fld.classList.add("field");
+                fld.innerText = '';
+            }
+            else if (flags > 0) {
+                fld.className = '';
+                fld.classList.add("field", "flag");
+                flags -= 1;
+                minesLeft.innerText = flags.toString();
+            }
         }
     }
 
@@ -196,7 +198,7 @@ function initializeField() {
             if (placeFlags) {
                 rightClickOperations(fld);
             }
-            else if (event.button === 2 && !fld.classList.contains("clicked")) {
+            else if (event.button === 2) {
                 rightClickOperations(fld);
             }
             else if (event.button === 0 && !(fld.classList.contains("flag") || fld.classList.contains("uncertain"))) {
